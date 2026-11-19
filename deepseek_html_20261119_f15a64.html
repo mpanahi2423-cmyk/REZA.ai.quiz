@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>۱۰۰ تست آموزشی هوش مصنوعی</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family: Tahoma, Vazirmatn, sans-serif; }
+  body {
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    background: #0a0e27;
+    color:#fff;
+  }
+  /* پس‌زمینه تصویری دیجیتال */
+  .bg {
+    position:fixed; inset:0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(0,200,255,.25), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(160,0,255,.25), transparent 40%),
+      linear-gradient(135deg,#050a1f 0%, #0a1230 50%, #050a1f 100%);
+    z-index:-2;
+  }
+  .bg::after {
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(0,255,255,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,255,.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index:-1;
+  }
+  .card {
+    width:min(92vw, 760px);
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(14px);
+    border:1px solid rgba(0,255,255,.25);
+    border-radius:22px;
+    padding:40px 30px;
+    box-shadow: 0 0 60px rgba(0,200,255,.2);
+    text-align:center;
+    animation: fadeIn .6s ease;
+  }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+  h1 {
+    font-size:clamp(22px, 4vw, 34px);
+    background: linear-gradient(90deg,#00e5ff,#a855f7,#00e5ff);
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:10px;
+  }
+  .subtitle { color:#9fb3d1; margin-bottom:35px; font-size:15px; }
+  .btn {
+    display:inline-block;
+    padding:14px 34px;
+    margin:10px;
+    border-radius:12px;
+    border:none;
+    cursor:pointer;
+    font-size:17px;
+    font-weight:bold;
+    transition:.3s;
+    color:#001018;
+    background: linear-gradient(135deg,#00e5ff,#00b3ff);
+    box-shadow:0 6px 20px rgba(0,200,255,.35);
+  }
+  .btn:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,200,255,.55); }
+  .btn.secondary {
+    background: transparent;
+    color:#00e5ff;
+    border:2px solid #00e5ff;
+    box-shadow:none;
+  }
+  .btn.secondary:hover { background:rgba(0,229,255,.1); }
+  .btn:disabled {
+    opacity:.4; cursor:not-allowed; transform:none !important;
+    box-shadow:none;
+  }
+  input[type=text] {
+    width:100%; max-width:380px;
+    padding:13px 16px;
+    border-radius:12px;
+    border:1px solid rgba(0,229,255,.4);
+    background:rgba(0,0,0,.35);
+    color:#fff; font-size:16px;
+    outline:none; margin:15px 0;
+    text-align:center;
+  }
+  input[type=text]:focus { border-color:#00e5ff; box-shadow:0 0 12px rgba(0,229,255,.4); }
+  .hidden { display:none !important; }
+
+  /* بخش تست */
+  .quiz-header {
+    display:flex; justify-content:space-between; flex-wrap:wrap;
+    gap:10px; margin-bottom:18px; font-size:14px; color:#9fb3d1;
+  }
+  .progress-bar {
+    width:100%; height:9px; background:rgba(255,255,255,.1);
+    border-radius:9px; overflow:hidden; margin-bottom:22px;
+  }
+  .progress-fill {
+    height:100%; width:0%;
+    background:linear-gradient(90deg,#00e5ff,#a855f7);
+    transition:width .4s;
+  }
+  .question {
+    font-size:18px; line-height:1.8; margin-bottom:22px; text-align:right;
+    min-height:60px;
+  }
+  .options { text-align:right; }
+  .option {
+    display:block; width:100%;
+    text-align:right;
+    padding:13px 16px; margin:9px 0;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(0,229,255,.18);
+    border-radius:12px;
+    color:#e6f2ff; font-size:15px;
+    cursor:pointer; transition:.25s;
+  }
+  .option:hover { background:rgba(0,229,255,.12); border-color:#00e5ff; }
+  .option.correct { background:rgba(0,220,120,.25); border-color:#00dc78; }
+  .option.wrong { background:rgba(255,60,60,.25); border-color:#ff3c3c; }
+  .nav-btns { margin-top:22px; display:flex; gap:12px; justify-content:center; }
+
+  .result-box { font-size:18px; line-height:2; }
+  .score { font-size:44px; font-weight:bold; color:#00e5ff; margin:15px 0; }
+  .about-link { color:#00e5ff; text-decoration:none; font-weight:bold; word-break:break-all; }
+  .about-link:hover { text-decoration:underline; }
+  .admin-list { max-height:300px; overflow-y:auto; text-align:right; margin-top:18px; }
+  .admin-item {
+    background:rgba(255,255,255,.05); padding:10px 14px; margin:6px 0;
+    border-radius:10px; font-size:14px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
+  .badge { color:#00e5ff; }
+  small { color:#7d92b0; }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+
+<div class="card" id="app">
+
+  <!-- صفحه اصلی -->
+  <div id="home">
+    <h1>۱۰۰ تست آموزشی درباره‌ی هوش مصنوعی</h1>
+    <p class="subtitle">دانش خود را در دنیای AI بسنجید 🤖</p>
+    <button class="btn" onclick="showLogin()">شروع تست</button>
+    <button class="btn secondary" onclick="showAbout()">درباره ما</button>
+  </div>
+
+  <!-- درباره ما -->
+  <div id="about" class="hidden">
+    <h1>درباره ما</h1>
+    <p class="subtitle">حساب اپارات ما:</p>
+    <p style="margin:18px 0;">
+      <a class="about-link" href="https://www.aparat.com/m_panahiazar" target="_blank">
+        https://www.aparat.com/m_panahiazar
+      </a>
+    </p>
+    <button class="btn secondary" onclick="goHome()">بازگشت</button>
+  </div>
+
+  <!-- نام -->
+  <div id="login" class="hidden">
+    <h1>نام خود را وارد کنید</h1>
+    <p class="subtitle">برای شروع تست، نام لازم است</p>
+    <input type="text" id="nameInput" placeholder="نام شما..." oninput="checkName()">
+    <br>
+    <button class="btn" id="startBtn" disabled onclick="startQuiz()">شروع تست</button>
+    <button class="btn secondary" onclick="goHome()">بازگشت</button>
+  </div>
+
+  <!-- تست -->
+  <div id="quiz" class="hidden">
+    <div class="quiz-header">
+      <span id="qCounter">سوال ۱ از ۱۰۰</span>
+      <span id="userLabel"></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="question" id="questionText"></div>
+    <div class="options" id="optionsBox"></div>
+    <div class="nav-btns">
+      <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>سوال بعدی</button>
+    </div>
+  </div>
+
+  <!-- نتیجه -->
+  <div id="result" class="hidden">
+    <h1>نتیجه تست</h1>
+    <div class="result-box">
+      <p>نام: <span id="resName" class="badge"></span></p>
+      <div class="score" id="resScore"></div>
+      <p id="resMsg"></p>
+    </div>
+    <button class="btn" onclick="goHome()">بازگشت به خانه</button>
+  </div>
+
+  <!-- پنل مدیر (مخفی) - با ۵ بار کلیک روی عنوان -->
+  <div id="admin" class="hidden">
+    <h1>پنل مدیر — لیست شرکت‌کنندگان</h1>
+    <p class="subtitle">(ذخیره‌شده در همین مرورگر — برای دیدن همه کاربران به سرور نیاز است)</p>
+    <div class="admin-list" id="adminList"></div>
+    <button class="btn secondary" onclick="goHome()">بازگشت</button>
+  </div>
+
+</div>
+
+<script>
+/* ==================== بانک سوالات ==================== */
+const questions = [
+  {q:"هوش مصنوعی (AI) چیست؟", o:["توانایی رایانه در انجام کارهای هوشمند","نوعی زبان برنامه‌نویسی","یک سیستم‌عامل","نوعی سخت‌افزار"], a:0},
+  {q:"کدام یک از موارد زیر شاخه‌ای از هوش مصنوعی است؟", o:["یادگیری ماشین","HTML","TCP/IP","RAM"], a:0},
+  {q:"یادگیری ماشین (Machine Learning) چیست؟", o:["توانایی یادگیری از داده‌ها بدون برنامه‌نویسی صریح","نوعی پایگاه داده","زبان طراحی وب","سیستم خنک‌کننده"], a:0},
+  {q:"کدام گزینه نمونه‌ای از یادگیری نظارت‌شده است؟", o:["دسته‌بندی ایمیل به اسپم و غیراسپم","خوشه‌بندی مشتریان","کاهش ابعاد","یادگیری تقویتی"], a:0},
+  {q:"در یادگیری نظارت‌شده به چه چیزی نیاز داریم؟", o:["داده‌های برچسب‌دار","فقط داده بدون برچسب","فقط سخت‌افزار","هیچ‌کدام"], a:0},
+  {q:"یادگیری بدون نظارت (Unsupervised) معمولاً چه کاری انجام می‌دهد؟", o:["کشف الگو و خوشه‌بندی","پیش‌بینی با برچسب","طبقه‌بندی با برچسب","تنظیم پارامتر"], a:0},
+  {q:"شبکه عصبی مصنوعی از چه چیزی الهام گرفته است؟", o:["مغز انسان","قلب","روده","ریه"], a:0},
+  {q:"واحد سازنده‌ی شبکه عصبی چه نام دارد؟", o:["نورون","ترانزیستور","بیت","بایت"], a:0},
+  {q:"یادگیری عمیق (Deep Learning) بر چه پایه‌ای است؟", o:["شبکه‌های عصبی چندلایه","درخت تصمیم","ماشین بردار پشتیبان","قوانین دستی"], a:0},
+  {q:"کدام یک از موارد زیر یک مدل زبانی بزرگ (LLM) است؟", o:["GPT","PNG","CPU","SSD"], a:0},
+  {q:"ChatGPT بر پایه‌ی چه فناوری‌ای ساخته شده است؟", o:["مدل‌های زبانی بزرگ","شبکه‌های اجتماعی","سیستم‌های فایل","پایگاه داده رابطه‌ای"], a:0},
+  {q:"توهم (Hallucination) در مدل‌های زبانی یعنی چه؟", o:["تولید اطلاعات نادرست با اطمینان","خاموش شدن مدل","کندی پردازش","خطای سخت‌افزاری"], a:0},
+  {q:"پردازش زبان طبیعی (NLP) به چه چیزی می‌پردازد؟", o:["تعامل رایانه با زبان انسان","پردازش تصویر","پردازش صدا","شبکه‌سازی"], a:0},
+  {q:"بینایی ماشین (Computer Vision) با چه چیزی سروکار دارد؟", o:["درک تصاویر و ویدیوها","درک متن","درک صدا","درک شبکه"], a:0},
+  {q:"تشخیص چهره نمونه‌ای از کدام حوزه است؟", o:["بینایی ماشین","NLP","یادگیری تقویتی","پایگاه داده"], a:0},
+  {q:"ترجمه ماشینی نمونه‌ای از کدام حوزه است؟", o:["NLP","بینایی ماشین","شبکه","سیستم‌عامل"], a:0},
+  {q:"یادگیری تقویتی (Reinforcement Learning) بر چه اساس است؟", o:["پاداش و تنبیه","برچسب‌های دستی","خوشه‌بندی","کاهش ابعاد"], a:0},
+  {q:"در یادگیری تقویتی عامل (Agent) چه می‌کند؟", o:["با محیط تعامل و پاداش جمع می‌کند","فقط داده ذخیره می‌کند","فقط تصویر می‌بیند","فقط متن می‌نویسد"], a:0},
+  {q:"الگوریتم ژنتیک از چه چیزی الهام گرفته است؟", o:["تکامل زیستی","مدارهای الکتریکی","شبکه‌های اجتماعی","قوانین فیزیک"], a:0},
+  {q:"منطق فازی (Fuzzy Logic) چه ویژگی‌ای دارد؟", o:["پذیرش درجات درستی بین ۰ و ۱","فقط درست و غلط","فقط اعداد صحیح","فقط متن"], a:0},
+  {q:"سیستم خبره (Expert System) چیست؟", o:["سیستمی که دانش متخصص را شبیه‌سازی می‌کند","سیستم‌عامل","پایگاه داده","مرورگر"], a:0},
+  {q:"کدام یک از موارد زیر داده‌ی آموزشی (Training Data) نیست؟", o:["فایل اجرایی برنامه","تصاویر","متون","صداها"], a:0},
+  {q:"بیش‌برازش (Overfitting) یعنی چه؟", o:["مدل روی داده آموزش خوب ولی روی داده جدید ضعیف عمل کند","مدل هیچ‌چیز یاد نگیرد","مدل خیلی سریع باشد","مدل حافظه کم مصرف کند"], a:0},
+  {q:"کم‌برازش (Underfitting) یعنی چه؟", o:["مدل حتی روی داده آموزش هم ضعیف است","مدل بیش از حد خوب است","مدل خیلی بزرگ است","مدل خیلی سریع است"], a:0},
+  {q:"برای جلوگیری از بیش‌برازش کدام روش مناسب است؟", o:["استفاده از داده بیشتر و تنظیم منظم (Regularization)","حذف داده‌ها","افزایش لایه‌ها بدون کنترل","کاهش نرخ یادگیری به صفر"], a:0},
+  {q:"مجموعه تست (Test Set) چه کاربردی دارد؟", o:["ارزیابی عملکرد مدل روی داده ندیده","آموزش مدل","افزایش داده","کاهش خطا"], a:0},
+  {q:"دقت (Accuracy) چیست؟", o:["نسبت پیش‌بینی‌های درست به کل","زمان اجرا","حجم داده","تعداد لایه‌ها"], a:0},
+  {q:"ماتریس درهم‌ریختگی (Confusion Matrix) چه چیزی را نشان می‌دهد؟", o:["عملکرد طبقه‌بند در کلاس‌ها","سرعت مدل","حجم حافظه","نوع داده"], a:0},
+  {q:"دقت (Precision) چه را می‌سنجد؟", o:["نسبت نمونه‌های مثبت درست پیش‌بینی‌شده به کل مثبت‌های پیش‌بینی‌شده","کل داده","زمان","حافظه"], a:0},
+  {q:"بازخوانی (Recall) چه را می‌سنجد؟", o:["نسبت مثبت‌های درست به کل مثبت‌های واقعی","سرعت","حجم","تعداد کلاس"], a:0},
+  {q:"F1-Score چیست؟", o:["میانگین هارمونیک دقت و بازخوانی","مجموع دقت و بازخوانی","تفاضل آن‌ها","ضرب آن‌ها"], a:0},
+  {q:"رگرسیون (Regression) برای چه نوع مسئله‌ای است؟", o:["پیش‌بینی مقدار پیوسته","دسته‌بندی","خوشه‌بندی","کاهش ابعاد"], a:0},
+  {q:"طبقه‌بندی (Classification) برای چه نوع مسئله‌ای است؟", o:["پیش‌بینی کلاس","پیش‌بینی عدد پیوسته","کاهش ابعاد","خوشه‌بندی"], a:0},
+  {q:"خوشه‌بندی (Clustering) نمونه‌ای از چه نوع یادگیری است؟", o:["بدون نظارت","با نظارت","تقویتی","نیمه‌نظارتی"], a:0},
+  {q:"الگوریتم K-Means چه کاری انجام می‌دهد؟", o:["خوشه‌بندی داده‌ها","طبقه‌بندی با برچسب","رگرسیون","کاهش نویز"], a:0},
+  {q:"درخت تصمیم (Decision Tree) چیست؟", o:["مدلی مبتنی بر قوانین شرطی","شبکه عصبی","ماشین بردار","مدل زبانی"], a:0},
+  {q:"جنگل تصادفی (Random Forest) از چه چیزی ساخته شده است؟", o:["چندین درخت تصمیم","چندین شبکه عصبی","چندین SVM","چندین پایگاه داده"], a:0},
+  {q:"ماشین بردار پشتیبان (SVM) چه هدفی دارد؟", o:["یافتن ابرصفحه جداکننده با بیشترین حاشیه","خوشه‌بندی","کاهش ابعاد","ترجمه"], a:0},
+  {q:"K نزدیک‌ترین همسایه (KNN) بر چه اصلی کار می‌کند؟", o:["شباهت به نزدیک‌ترین نمونه‌ها","درخت تصمیم","شبکه عصبی","قوانین منطقی"], a:0},
+  {q:"نایو بیز (Naive Bayes) بر چه قضیه‌ای استوار است؟", o:["قضیه بیز","قضیه فیثاغورس","قانون اهم","قانون نیوتن"], a:0},
+  {q:"کاهش ابعاد (Dimensionality Reduction) چه هدفی دارد؟", o:["کاهش تعداد ویژگی‌ها با حفظ اطلاعات مهم","افزایش تعداد ویژگی‌ها","حذف داده‌ها","افزایش نویز"], a:0},
+  {q:"تحلیل مؤلفه‌های اصلی (PCA) چه کاری انجام می‌دهد؟", o:["کاهش ابعاد با حفظ واریانس","طبقه‌بندی","خوشه‌بندی","ترجمه"], a:0},
+  {q:"نرمال‌سازی (Normalization) داده‌ها چه فایده‌ای دارد؟", o:["هم‌مقیاس کردن ویژگی‌ها","حذف داده‌ها","افزایش نویز","کاهش دقت"], a:0},
+  {q:"نرخ یادگیری (Learning Rate) چه چیزی را کنترل می‌کند؟", o:["گام به‌روزرسانی وزن‌ها","تعداد لایه‌ها","حجم داده","نوع تابع فعال‌سازی"], a:0},
+  {q:"نرخ یادگیری بسیار بزرگ چه مشکلی ایجاد می‌کند؟", o:["نوسان و عدم همگرایی","کندی شدید","بیش‌برازش","کم‌برازش"], a:0},
+  {q:"تابع فعال‌سازی ReLU چیست؟", o:["max(0, x)","tanh(x)","sigmoid(x)","x^2"], a:0},
+  {q:"تابع فعال‌سازی Sigmoid چه خروجی‌ای می‌دهد؟", o:["مقداری بین ۰ و ۱","مقداری بین -۱ و ۱","هر عددی","فقط ۰ و ۱"], a:0},
+  {q:"گرادیان نزولی (Gradient Descent) چه کاری انجام می‌دهد؟", o:["کمینه‌سازی تابع خطا با حرکت در جهت گرادیان","افزایش خطا","خوشه‌بندی","کاهش ابعاد"], a:0},
+  {q:"پس‌انتشار خطا (Backpropagation) در چه چیزی استفاده می‌شود؟", o:["آموزش شبکه عصبی","ترجمه","خوشه‌بندی","ذخیره داده"], a:0},
+  {q:"اپوک (Epoch) در آموزش یعنی چه؟", o:["یک دور کامل عبور از کل داده آموزش","یک لایه شبکه","یک نورون","یک ویژگی"], a:0},
+  {q:"دسته (Batch) در آموزش یعنی چه؟", o:["زیرمجموعه‌ای از داده برای یک به‌روزرسانی","کل داده","یک لایه","یک نورون"], a:0},
+  {q:"CNN بیشتر برای چه نوع داده‌ای مناسب است؟", o:["تصاویر","متن","صدا","جدول"], a:0},
+  {q:"RNN بیشتر برای چه نوع داده‌ای مناسب است؟", o:["داده‌های ترتیبی مانند متن و سری زمانی","تصاویر","جدول","نقشه"], a:0},
+  {q:"مشکل محو شدن گرادیان (Vanishing Gradient) در کدام شبکه رایج است؟", o:["RNN ساده","CNN","درخت تصمیم","SVM"], a:0},
+  {q:"LSTM چه مشکلی را حل می‌کند؟", o:["حافظه بلندمدت در داده‌های ترتیبی","کاهش ابعاد","خوشه‌بندی","طبقه‌بندی تصویر"], a:0},
+  {q:"Transformer چه ویژگی کلیدی دارد؟", o:["مکانیزم توجه (Attention)","لایه‌های کانولوشن","حلقه بازگشتی","درخت تصمیم"], a:0},
+  {q:"مکانیزم Self-Attention چه کاری انجام می‌دهد؟", o:["ارتباط بین اجزای مختلف ورودی را می‌سنجد","داده را حذف می‌کند","شبکه را کوچک می‌کند","صدا را تبدیل می‌کند"], a:0},
+  {q:"مدل BERT چه نوع مدلی است؟", o:["مدل زبانی مبتنی بر Transformer","شبکه کانولوشنی","درخت تصمیم","ماشین بردار"], a:0},
+  {q:"توکن (Token) در NLP چیست؟", o:["واحد کوچک متن مانند کلمه یا زیرکلمه","یک لایه شبکه","یک نورون","یک فایل"], a:0},
+  {q:"توکن‌سازی (Tokenization) چیست؟", o:["تقسیم متن به توکن‌ها","حذف متن","ترجمه متن","ذخیره متن"], a:0},
+  {q:"Embedding در NLP چیست؟", o:["تبدیل کلمات به بردار عددی","حذف کلمات","ترجمه کلمات","شمارش کلمات"], a:0},
+  {q:"شبکه عصبی مولد تخاصمی (GAN) از چه دو بخشی تشکیل شده است؟", o:["مولد و تمایزگر","رمزگذار و رمزگشا","ورودی و خروجی","لایه و نورون"], a:0},
+  {q:"کار مولد (Generator) در GAN چیست؟", o:["تولید داده‌های شبیه واقعی","تشخیص داده واقعی","کاهش ابعاد","خوشه‌بندی"], a:0},
+  {q:"اتوکدکننده (Autoencoder) چه کاری انجام می‌دهد؟", o:["فشرده‌سازی و بازسازی داده","تولید متن","ترجمه","طبقه‌بندی"], a:0},
+  {q:"یادگیری انتقالی (Transfer Learning) چیست؟", o:["استفاده از مدل آموزش‌دیده برای مسئله جدید","آموزش از صفر","حذف مدل","کاهش داده"], a:0},
+  {q:"Fine-tuning یعنی چه؟", o:["تنظیم دقیق مدل از پیش آموزش‌دیده روی داده جدید","آموزش از صفر","حذف لایه‌ها","کاهش نرخ یادگیری به صفر"], a:0},
+  {q:"داده‌های برچسب‌دار (Labeled Data) چیست؟", o:["داده‌ای که پاسخ درست آن مشخص است","داده بدون پاسخ","داده تصویری","داده صوتی"], a:0},
+  {q:"یادگیری نیمه‌نظارتی (Semi-supervised) چیست؟", o:["ترکیبی از داده برچسب‌دار و بدون برچسب","فقط داده برچسب‌دار","فقط داده بدون برچسب","بدون داده"], a:0},
+  {q:"تقویت داده (Data Augmentation) چیست؟", o:["ایجاد نسخه‌های متنوع از داده موجود","حذف داده","افزایش نویز","کاهش داده"], a:0},
+  {q:"اعتبارسنجی متقابل (Cross-Validation) چه فایده‌ای دارد؟", o:["ارزیابی پایدارتر مدل","افزایش سرعت","کاهش داده","حذف مدل"], a:0},
+  {q:"هایپرپارامتر (Hyperparameter) چیست؟", o:["پارامتری که قبل از آموزش تنظیم می‌شود","وزن شبکه","داده ورودی","خروجی مدل"], a:0},
+  {q:"جستجوی شبکه‌ای (Grid Search) برای چه کاری است؟", o:["یافتن بهترین ترکیب هایپرپارامترها","خوشه‌بندی","کاهش ابعاد","ترجمه"], a:0},
+  {q:"تابع هزینه (Loss Function) چه چیزی را می‌سنجد؟", o:["فاصله پیش‌بینی مدل از مقدار واقعی","سرعت مدل","حجم داده","تعداد لایه‌ها"], a:0},
+  {q:"MSE مخفف چیست؟", o:["Mean Squared Error","Maximum Square Error","Mean Simple Error","Multi Squared Error"], a:0},
+  {q:"Cross-Entropy بیشتر در چه مسائلی استفاده می‌شود؟", o:["طبقه‌بندی","رگرسیون","خوشه‌بندی","کاهش ابعاد"], a:0},
+  {q:"AI مولد (Generative AI) چه کاری انجام می‌دهد؟", o:["تولید محتوای جدید مانند متن و تصویر","فقط طبقه‌بندی","فقط خوشه‌بندی","فقط ذخیره داده"], a:0},
+  {q:"DALL·E و Midjourney چه نوع ابزارهایی هستند؟", o:["تولید تصویر با هوش مصنوعی","ویرایش متن","پایگاه داده","سیستم‌عامل"], a:0},
+  {q:"داده‌کاوی (Data Mining) چیست؟", o:["کشف الگو از داده‌های بزرگ","حذف داده","ذخیره داده","رمزنگاری داده"], a:0},
+  {q:"کلان‌داده (Big Data) با چه ویژگی‌هایی شناخته می‌شود؟", o:["حجم، سرعت، تنوع","رنگ، اندازه، وزن","سرعت، دما، فشار","طول، عرض، ارتفاع"], a:0},
+  {q:"پردازش موازی (Parallel Processing) چه فایده‌ای دارد؟", o:["افزایش سرعت محاسبات","کاهش دقت","افزایش نویز","کاهش داده"], a:0},
+  {q:"GPU در هوش مصنوعی چه نقشی دارد؟", o:["تسریع محاسبات موازی","ذخیره داده","نمایش تصویر","اتصال شبکه"], a:0},
+  {q:"TPU چیست؟", o:["پردازنده اختصاصی برای یادگیری ماشین","نوعی حافظه","نوعی شبکه","نوعی زبان"], a:0},
+  {q:"کلاود (Cloud) در AI چه کاربردی دارد؟", o:["اجرای مدل‌ها با منابع از راه دور","ذخیره فقط عکس","چاپ سند","ویرایش ویدیو"], a:0},
+  {q:"API در هوش مصنوعی چه کاری انجام می‌دهد؟", o:["دسترسی برنامه‌ها به سرویس AI","ذخیره داده","نمایش تصویر","اتصال سخت‌افزار"], a:0},
+  {q:"هوش مصنوعی ضعیف (Narrow AI) چیست؟", o:["AI متخصص در یک کار خاص","AI با آگاهی کامل","AI انسانی","AI عمومی"], a:0},
+  {q:"هوش مصنوعی عمومی (AGI) چیست؟", o:["AI با توانایی انجام هر کار فکری انسان","AI مخصوص بازی شطرنج","AI مخصوص ترجمه","AI مخصوص تصویر"], a:0},
+  {q:"هوش مصنوعی ابری (Super AI) چه ویژگی‌ای دارد؟", o:["فراتر از توانایی انسان (فرضی)","ضعیف‌تر از انسان","فقط برای بازی","فقط برای متن"], a:0},
+  {q:"تست تورینگ (Turing Test) چه چیزی را می‌سنجد؟", o:["توانایی ماشین در تقلید رفتار انسانی","سرعت ماشین","حافظه ماشین","قدرت پردازش"], a:0},
+  {q:"اتاق چینی (Chinese Room) چه مفهومی را نشان می‌دهد؟", o:["تفاوت فهم واقعی و تقلید","سرعت پردازش","حافظه","شبکه عصبی"], a:0},
+  {q:"اخلاق هوش مصنوعی (AI Ethics) به چه چیزی می‌پردازد؟", o:["استفاده مسئولانه و منصفانه از AI","سرعت الگوریتم","حجم داده","نوع سخت‌افزار"], a:0},
+  {q:"سوگیری (Bias) در AI چیست؟", o:["جانبداری مدل به دلیل داده نامتوازن","خطای سخت‌افزاری","کندی مدل","حجم زیاد داده"], a:0},
+  {q:"شفافیت (Explainability) در AI یعنی چه؟", o:["توانایی توضیح تصمیم‌های مدل","پنهان کردن مدل","حذف داده","کاهش دقت"], a:0},
+  {q:"حریم خصوصی (Privacy) در AI چه اهمیتی دارد؟", o:["حفاظت از داده‌های شخصی کاربران","افزایش سرعت","کاهش هزینه","افزایش دقت"], a:0},
+  {q:"یادگیری فدرال (Federated Learning) چیست؟", o:["آموزش مدل بدون انتقال داده خام به سرور مرکزی","آموزش فقط روی یک دستگاه","حذف داده","رمزنگاری داده"], a:0},
+  {q:"دیپ‌فیک (Deepfake) چیست؟", o:["محتوای جعلی ساخته‌شده با AI","نوعی بازی","نوعی شبکه","نوعی پایگاه داده"], a:0},
+  {q:"خودران (Self-driving) از کدام فناوری‌ها استفاده می‌کند؟", o:["بینایی ماشین و یادگیری عمیق","فقط GPS","فقط دوربین","فقط رادار"], a:0},
+  {q:"دستیار صوتی مانند Siri از چه فناوری‌ای استفاده می‌کند؟", o:["تشخیص گفتار و NLP","فقط ترجمه","فقط تصویر","فقط پایگاه داده"], a:0},
+  {q:"سیستم توصیه‌گر (Recommender System) چه کاری انجام می‌دهد؟", o:["پیشنهاد محتوا بر اساس رفتار کاربر","حذف محتوا","ذخیره محتوا","رمزنگاری محتوا"], a:0},
+  {q:"کدام یک از موارد زیر کاربرد AI در پزشکی است؟", o:["تشخیص بیماری از تصاویر پزشکی","چاپ کتاب","ویرایش عکس","بازی"], a:0},
+  {q:"کدام یک از موارد زیر کاربرد AI در کشاورزی است؟", o:["پایش سلامت گیاه با تصویر","ترجمه متن","ویرایش ویدیو","شبکه‌سازی"], a:0},
+  {q:"کدام یک از موارد زیر چالش AI است؟", o:["نیاز به داده زیاد و باکیفیت","کاهش هزینه","افزایش سرعت","کاهش مصرف انرژی"], a:0},
+  {q:"یادگیری عمیق معمولاً به چه چیزی نیاز دارد؟", o:["داده زیاد و توان محاسباتی بالا","داده کم","سخت‌افزار ضعیف","زمان کم"], a:0},
+  {q:"کدام زبان برنامه‌نویسی بیشتر در AI استفاده می‌شود؟", o:["Python","HTML","CSS","SQL"], a:0},
+  {q:"کتابخانه TensorFlow مربوط به چیست؟", o:["یادگیری ماشین","طراحی وب","پایگاه داده","شبکه"], a:0}
+];
+
+/* ==================== مدیریت وضعیت ==================== */
+let currentIndex = 0;
+let userName = "";
+let userAnswers = [];
+let score = 0;
+let answered = false;
+
+const $ = id => document.getElementById(id);
+
+function hideAll() {
+  ["home","about","login","quiz","result","admin"].forEach(id => $(id).classList.add("hidden"));
+}
+function goHome() { hideAll(); $("home").classList.remove("hidden"); }
+function showAbout() { hideAll(); $("about").classList.remove("hidden"); }
+function showLogin() { hideAll(); $("login").classList.remove("hidden"); $("nameInput").focus(); }
+
+function checkName() {
+  const val = $("nameInput").value.trim();
+  $("startBtn").disabled = val.length === 0;
+}
+
+function startQuiz() {
+  userName = $("nameInput").value.trim();
+  if (!userName) return;
+  currentIndex = 0; score = 0; userAnswers = []; answered = false;
+  hideAll(); $("quiz").classList.remove("hidden");
+  $("userLabel").textContent = "کاربر: " + userName;
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  const q = questions[currentIndex];
+  $("qCounter").textContent = `سوال ${toFa(currentIndex+1)} از ${toFa(questions.length)}`;
+  $("progressFill").style.width = ((currentIndex) / questions.length * 100) + "%";
+  $("questionText").textContent = q.q;
+  const box = $("optionsBox");
+  box.innerHTML = "";
+  q.o.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent = opt;
+    btn.onclick = () => selectOption(i, btn);
+    box.appendChild(btn);
+  });
+  $("nextBtn").disabled = true;
+  $("nextBtn").textContent = (currentIndex === questions.length - 1) ? "پایان و مشاهده نتیجه" : "سوال بعدی";
+}
+
+function selectOption(idx, btn) {
+  if (answered) return;
+  answered = true;
+  const q = questions[currentIndex];
+  const allBtns = $("optionsBox").querySelectorAll(".option");
+  allBtns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.a) b.classList.add("correct");
+    if (i === idx && idx !== q.a) b.classList.add("wrong");
+  });
+  userAnswers.push({q: q.q, chosen: idx, correct: q.a});
+  if (idx === q.a) score++;
+  $("nextBtn").disabled = false;
+}
+
+function nextQuestion() {
+  if (currentIndex < questions.length - 1) {
+    currentIndex++;
+    loadQuestion();
+  } else {
+    finishQuiz();
+  }
+}
+
+function finishQuiz() {
+  $("progressFill").style.width = "100%";
+  hideAll(); $("result").classList.remove("hidden");
+  $("resName").textContent = userName;
+  $("resScore").textContent = `${toFa(score)} از ${toFa(questions.length)}`;
+  let msg = "";
+  const p = score / questions.length;
+  if (p >= 0.9) msg = "عالی! شما یک متخصص هوش مصنوعی هستید 🏆";
+  else if (p >= 0.7) msg = "خیلی خوب! دانش شما بالاست 🌟";
+  else if (p >= 0.5) msg = "قابل قبول، اما جای پیشرفت دارید 💪";
+  else msg = "نیاز به مطالعه بیشتر دارید 📚";
+  $("resMsg").textContent = msg;
+
+  // ذخیره در localStorage (برای پنل مدیر محلی)
+  const record = {
+    name: userName,
+    score: score,
+    total: questions.length,
+    date: new Date().toLocaleString("fa-IR")
+  };
+  const prev = JSON.parse(localStorage.getItem("ai_quiz_results") || "[]");
+  prev.push(record);
+  localStorage.setItem("ai_quiz_results", JSON.stringify(prev));
+}
+
+function toFa(n) {
+  return String(n).replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
+}
+
+/* ==================== پنل مدیر (مخفی) ==================== */
+let clickCount = 0;
+document.addEventListener("DOMContentLoaded", () => {
+  // ۵ بار کلیک روی عنوان اصلی
+  $("home").querySelector("h1").addEventListener("click", () => {
+    clickCount++;
+    if (clickCount >= 5) {
+      clickCount = 0;
+      openAdmin();
+    }
+  });
+  // ورودی نام: Enter برای شروع
+  $("nameInput").addEventListener("keypress", e => {
+    if (e.key === "Enter" && !$("startBtn").disabled) startQuiz();
+  });
+});
+
+function openAdmin() {
+  hideAll();
+  $("admin").classList.remove("hidden");
+  const list = JSON.parse(localStorage.getItem("ai_quiz_results") || "[]");
+  const box = $("adminList");
+  if (list.length === 0) {
+    box.innerHTML = "<p class='subtitle'>هنوز کسی تست نداده است.</p>";
+    return;
+  }
+  box.innerHTML = list.slice().reverse().map(r => `
+    <div class="admin-item">
+      <span>👤 ${r.name}</span>
+      <span class="badge">${toFa(r.score)}/${toFa(r.total)}</span>
+      <small>${r.date}</small>
+    </div>
+  `).join("");
+}
+</script>
+</body>
+</html>
